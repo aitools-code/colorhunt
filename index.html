@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Platform</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Learning Platform</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Expand Your Knowledge</h2>
+            <p>Browse our collection of courses and start learning today</p>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search courses...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+                <button id="searchBtn">Search</button>
+            </div>
+        </section>
+
+        <section id="courses-section">
+            <h2>Available Courses</h2>
+            <div id="courses-grid" class="courses-grid">
+                <!-- Courses will be loaded here dynamically -->
+            </div>
+            <div id="loading" class="loading">Loading courses...</div>
+            <div id="no-courses" class="no-courses hidden">No courses found matching your criteria.</div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Learning Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js"></script>
+    <script src="assets/js/sheets-loader.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
