@@ -1,111 +1,87 @@
-// Google Sheets data loader using Tabletop.js
+// Google Sheets Data Loader
 class SheetsLoader {
-    constructor(spreadsheetKey) {
-        this.spreadsheetKey = spreadsheetKey;
+    constructor() {
         this.courses = [];
         this.lessons = [];
-        this.isLoaded = false;
-        this.loadCallbacks = [];
+        this.initialized = false;
     }
-    
-    // Initialize Tabletop and load data
+
+    // Initialize Tabletop with Google Sheets
     init() {
-        return new Promise((resolve, reject) => {
-            if (this.isLoaded) {
-                resolve({ courses: this.courses, lessons: this.lessons });
-                return;
-            }
-            
-            // Add to load callbacks
-            this.loadCallbacks.push({ resolve, reject });
-            
-            // Only initialize Tabletop once
-            if (this.loadCallbacks.length === 1) {
-                Tabletop.init({
-                    key: this.spreadsheetKey,
-                    callback: (data, tabletop) => {
-                        this.processData(data);
-                        this.isLoaded = true;
-                        
-                        // Resolve all pending promises
-                        this.loadCallbacks.forEach(callback => {
-                            callback.resolve({ courses: this.courses, lessons: this.lessons });
-                        });
-                        this.loadCallbacks = [];
-                    },
-                    simpleSheet: false,
-                    wanted: ['courses', 'lessons']
-                });
-            }
+        // Replace with your Google Sheets ID
+        const spreadsheetId = 'SPREADSHEET_ID';
+        const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit?usp=sharing`;
+        
+        Tabletop.init({
+            key: publicSheetUrl,
+            callback: (data, tabletop) => this.processData(data, tabletop),
+            simpleSheet: false,
+            wanted: ['courses', 'lessons']
         });
     }
-    
+
     // Process the data from Google Sheets
-    processData(data) {
-        // Process courses
+    processData(data, tabletop) {
         if (data.courses && data.courses.elements) {
-            this.courses = data.courses.elements.map(course => ({
-                course_id: course.course_id,
-                title: course.title,
-                slug: course.slug,
-                description: course.description,
-                thumbnail_url: course.thumbnail_url,
-                price: parseFloat(course.price) || 0,
-                category: course.category
-            }));
+            this.courses = data.courses.elements;
         }
         
-        // Process lessons
         if (data.lessons && data.lessons.elements) {
-            this.lessons = data.lessons.elements.map(lesson => ({
-                lesson_id: lesson.lesson_id,
-                course_id: lesson.course_id,
-                title: lesson.title,
-                content_url: lesson.content_url,
-                order: parseInt(lesson.order) || 0
-            })).sort((a, b) => a.order - b.order);
+            this.lessons = data.lessons.elements;
         }
+        
+        this.initialized = true;
+        
+        // Dispatch custom event when data is loaded
+        const event = new CustomEvent('sheetsLoaded', {
+            detail: {
+                courses: this.courses,
+                lessons: this.lessons
+            }
+        });
+        document.dispatchEvent(event);
     }
-    
+
     // Get all courses
     getCourses() {
         return this.courses;
     }
-    
-    // Get a specific course by slug
+
+    // Get courses with filtering options
+    getFilteredCourses(searchTerm = '', category = '', priceFilter = '') {
+        return this.courses.filter(course => {
+            const matchesSearch = !searchTerm || 
+                course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                course.description.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            const matchesCategory = !category || course.category === category;
+            
+            const matchesPrice = !priceFilter || 
+                (priceFilter === 'free' && course.price === '0') ||
+                (priceFilter === 'paid' && course.price !== '0');
+            
+            return matchesSearch && matchesCategory && matchesPrice;
+        });
+    }
+
+    // Get course by slug
     getCourseBySlug(slug) {
         return this.courses.find(course => course.slug === slug);
     }
-    
-    // Get lessons for a specific course
+
+    // Get lessons for a course
     getLessonsForCourse(courseId) {
-        return this.lessons.filter(lesson => lesson.course_id === courseId);
+        return this.lessons
+            .filter(lesson => lesson.course_id === courseId)
+            .sort((a, b) => parseInt(a.order) - parseInt(b.order));
     }
-    
-    // Search courses by title and category
-    searchCourses(query, category) {
-        let results = this.courses;
-        
-        // Filter by search query
-        if (query) {
-            const lowercaseQuery = query.toLowerCase();
-            results = results.filter(course => 
-                course.title.toLowerCase().includes(lowercaseQuery) ||
-                course.description.toLowerCase().includes(lowercaseQuery)
-            );
-        }
-        
-        // Filter by category
-        if (category) {
-            results = results.filter(course => course.category === category);
-        }
-        
-        return results;
-    }
-    
+
     // Get all unique categories
     getCategories() {
-        const categories = this.courses.map(course => course.category);
-        return [...new Set(categories)].filter(Boolean).sort();
+        const categories = [...new Set(this.courses.map(course => course.category))];
+        return categories.filter(category => category); // Remove empty categories
     }
 }
+
+// Create global instance
+const sheetsLoader = new SheetsLoader();
