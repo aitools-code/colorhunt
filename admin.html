@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+        .tab.active {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Course Admin Panel</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('add-course')">Add Course</div>
+            <div class="tab" onclick="showTab('add-lesson')">Add Lesson</div>
+        </div>
+
+        <div id="add-course" class="tab-content">
+            <h2>Add New Course</h2>
+            <form id="course-form">
+                <div class="form-group">
+                    <label>Course Title:</label>
+                    <input type="text" id="course-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Course Slug (URL):</label>
+                    <input type="text" id="course-slug" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="course-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Thumbnail URL:</label>
+                    <input type="url" id="course-thumbnail">
+                </div>
+                <div class="form-group">
+                    <label>Price:</label>
+                    <input type="number" id="course-price" value="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <input type="text" id="course-category" required>
+                </div>
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+
+        <div id="add-lesson" class="tab-content" style="display: none;">
+            <h2>Add New Lesson</h2>
+            <form id="lesson-form">
+                <div class="form-group">
+                    <label>Select Course:</label>
+                    <select id="lesson-course" required>
+                        <option value="">Select Course</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Lesson Title:</label>
+                    <input type="text" id="lesson-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Content URL (YouTube/Vimeo/Embed):</label>
+                    <input type="url" id="lesson-content" required>
+                </div>
+                <div class="form-group">
+                    <label>Order Number:</label>
+                    <input type="number" id="lesson-order" required>
+                </div>
+                <button type="submit">Add Lesson</button>
+            </form>
+        </div>
+
+        <div id="message" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // Course form submission
+        document.getElementById('course-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const courseData = {
+                title: document.getElementById('course-title').value,
+                slug: document.getElementById('course-slug').value,
+                description: document.getElementById('course-description').value,
+                thumbnail_url: document.getElementById('course-thumbnail').value,
+                price: document.getElementById('course-price').value,
+                category: document.getElementById('course-category').value
+            };
+            
+            // Yahan aap Google Sheets API call karenge
+            alert('Course added successfully! Note: This is a demo. You need to connect Google Sheets API.');
+            
+            // Form reset
+            this.reset();
+        });
+
+        // Lesson form submission
+        document.getElementById('lesson-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const lessonData = {
+                course_id: document.getElementById('lesson-course').value,
+                title: document.getElementById('lesson-title').value,
+                content_url: document.getElementById('lesson-content').value,
+                order: document.getElementById('lesson-order').value
+            };
+            
+            // Yahan aap Google Sheets API call karenge
+            alert('Lesson added successfully! Note: This is a demo. You need to connect Google Sheets API.');
+            
+            // Form reset
+            this.reset();
+        });
+    </script>
+</body>
+</html>
