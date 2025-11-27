@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="index.html">Learning Platform</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="course-details">
+            <div class="course-header">
+                <img id="course-thumbnail" src="" alt="Course thumbnail">
+                <div class="course-info">
+                    <h1 id="course-title">Course Title</h1>
+                    <p id="course-description">Course description will appear here.</p>
+                    <div class="course-meta">
+                        <span id="course-category" class="category-tag">Category</span>
+                        <span id="course-price" class="price-tag">Free</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-content">
+                <div class="lessons-sidebar">
+                    <h2>Lessons</h2>
+                    <ul id="lessons-list">
+                        <!-- Lessons will be loaded here dynamically -->
+                    </ul>
+                </div>
+                <div class="lesson-preview">
+                    <div id="lesson-placeholder">
+                        <h3>Select a lesson to preview</h3>
+                        <p>Choose a lesson from the list on the left to view its content.</p>
+                    </div>
+                    <div id="lesson-content" class="hidden">
+                        <h3 id="lesson-title">Lesson Title</h3>
+                        <div id="lesson-body">
+                            <!-- Lesson content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="loading" class="loading">Loading course details...</div>
+        <div id="course-not-found" class="error-message hidden">
+            <h2>Course Not Found</h2>
+            <p>The course you're looking for doesn't exist or has been removed.</p>
+            <a href="index.html" class="btn">Back to Courses</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Learning Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js"></script>
+    <script src="assets/js/sheets-loader.js"></script>
+    <script src="assets/js/course.js"></script>
+</body>
+</html>
